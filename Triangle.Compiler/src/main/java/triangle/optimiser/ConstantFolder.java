@@ -19,6 +19,8 @@ import triangle.abstractSyntaxTrees.commands.CallCommand;
 import triangle.abstractSyntaxTrees.commands.EmptyCommand;
 import triangle.abstractSyntaxTrees.commands.IfCommand;
 import triangle.abstractSyntaxTrees.commands.LetCommand;
+import triangle.abstractSyntaxTrees.commands.LoopCommand;
+import triangle.abstractSyntaxTrees.commands.RepeatCommand;
 import triangle.abstractSyntaxTrees.commands.SequentialCommand;
 import triangle.abstractSyntaxTrees.commands.WhileCommand;
 import triangle.abstractSyntaxTrees.declarations.BinaryOperatorDeclaration;
@@ -582,18 +584,56 @@ public class ConstantFolder implements ActualParameterVisitor<Void, AbstractSynt
 				foldedValue = int1 + int2;
 			}
 
+			if(o.decl == StdEnvironment.greaterDecl){
+				foldedValue = int1 > int2;
+			} 
+			else if(o.decl == StdEnvironment.notgreaterDecl){
+				foldedValue = int1 <= int2;
+			}
+
 			if (foldedValue instanceof Integer) {
 				IntegerLiteral il = new IntegerLiteral(foldedValue.toString(), node1.getPosition());
 				IntegerExpression ie = new IntegerExpression(il, node1.getPosition());
 				ie.type = StdEnvironment.integerType;
 				return ie;
 			} else if (foldedValue instanceof Boolean) {
-				/* currently not handled! */
+				Identifier trueId = new Identifier("true", node1.getPosition());
+				Identifier falseId = new Identifier("false", node1.getPosition());
+
+				trueId.decl = StdEnvironment.trueDecl;
+				falseId.decl = StdEnvironment.falseDecl;
+				
+				if (foldedValue.toString().equals("true")){
+					SimpleVname trueName = new SimpleVname(trueId, node1.getPosition());
+					VnameExpression trueExpression = new VnameExpression(trueName, node1.getPosition());
+					trueExpression.type = StdEnvironment.booleanType;
+					return trueExpression;
+				}
+
+				else{
+					SimpleVname falseName = new SimpleVname(falseId, node1.getPosition());
+					VnameExpression falseExpression = new VnameExpression(falseName, node1.getPosition());
+					falseExpression.type = StdEnvironment.booleanType;
+					return falseExpression;
+				}
+
 			}
 		}
 
 		// any unhandled situation (i.e., not foldable) is ignored
 		return null;
+	}
+
+	@Override
+	public AbstractSyntaxTree visitRepeatCommand(RepeatCommand ast, Void arg) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'visitRepeatCommand'");
+	}
+
+	@Override
+	public AbstractSyntaxTree visitLoopCommand(LoopCommand ast, Void arg) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'visitLoopCommand'");
 	}
 
 }

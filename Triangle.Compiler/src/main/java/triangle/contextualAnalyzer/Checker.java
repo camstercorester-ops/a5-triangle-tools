@@ -38,6 +38,8 @@ import triangle.abstractSyntaxTrees.commands.CallCommand;
 import triangle.abstractSyntaxTrees.commands.EmptyCommand;
 import triangle.abstractSyntaxTrees.commands.IfCommand;
 import triangle.abstractSyntaxTrees.commands.LetCommand;
+import triangle.abstractSyntaxTrees.commands.LoopCommand;
+import triangle.abstractSyntaxTrees.commands.RepeatCommand;
 import triangle.abstractSyntaxTrees.commands.SequentialCommand;
 import triangle.abstractSyntaxTrees.commands.WhileCommand;
 import triangle.abstractSyntaxTrees.declarations.BinaryOperatorDeclaration;
@@ -738,6 +740,11 @@ public final class Checker implements ActualParameterVisitor<FormalParameter, Vo
 		return null;
 	}
 
+	@Override
+	public Void visitRepeatCommand(RepeatCommand ast, Void arg){
+		return null;
+	}
+
 	// Checks whether the source program, represented by its AST, satisfies the
 	// language's scope rules and type rules.
 	// Also decorates the AST as follows:
@@ -907,6 +914,7 @@ public final class Checker implements ActualParameterVisitor<FormalParameter, Vo
 		StdEnvironment.falseDecl = declareStdConst("false", StdEnvironment.booleanType);
 		StdEnvironment.trueDecl = declareStdConst("true", StdEnvironment.booleanType);
 		StdEnvironment.notDecl = declareStdUnaryOp("\\", StdEnvironment.booleanType, StdEnvironment.booleanType);
+		StdEnvironment.doubleDecl = declareStdUnaryOp("**", StdEnvironment.integerType, StdEnvironment.integerType);
 		StdEnvironment.andDecl = declareStdBinaryOp("/\\", StdEnvironment.booleanType, StdEnvironment.booleanType,
 				StdEnvironment.booleanType);
 		StdEnvironment.orDecl = declareStdBinaryOp("\\/", StdEnvironment.booleanType, StdEnvironment.booleanType,
@@ -961,5 +969,11 @@ public final class Checker implements ActualParameterVisitor<FormalParameter, Vo
 		StdEnvironment.unequalDecl = declareStdBinaryOp("\\=", StdEnvironment.anyType, StdEnvironment.anyType,
 				StdEnvironment.booleanType);
 
+	}
+
+	@Override
+	public Void visitLoopCommand(LoopCommand ast, Void arg) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'visitLoopCommand'");
 	}
 }

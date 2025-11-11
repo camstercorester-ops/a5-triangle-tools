@@ -37,6 +37,8 @@ import triangle.abstractSyntaxTrees.commands.CallCommand;
 import triangle.abstractSyntaxTrees.commands.EmptyCommand;
 import triangle.abstractSyntaxTrees.commands.IfCommand;
 import triangle.abstractSyntaxTrees.commands.LetCommand;
+import triangle.abstractSyntaxTrees.commands.LoopCommand;
+import triangle.abstractSyntaxTrees.commands.RepeatCommand;
 import triangle.abstractSyntaxTrees.commands.SequentialCommand;
 import triangle.abstractSyntaxTrees.commands.WhileCommand;
 import triangle.abstractSyntaxTrees.declarations.BinaryOperatorDeclaration;
@@ -529,6 +531,11 @@ public class LayoutVisitor implements ActualParameterVisitor<Void, DrawingTree>,
 		return layoutUnary("Program", d1);
 	}
 
+	@Override
+	public DrawingTree visitRepeatCommand(RepeatCommand ast, Void obj){
+		return null;
+	}
+
 	private DrawingTree layoutCaption(String name) {
 		var w = fontMetrics.stringWidth(name) + 4;
 		var h = fontMetrics.getHeight() + 4;
@@ -679,6 +686,12 @@ public class LayoutVisitor implements ActualParameterVisitor<Void, DrawingTree>,
 		line1.link = new Polyline(x2 + line2.dx - dx - x1, 0, r);
 
 		return r;
+	}
+
+	@Override
+	public DrawingTree visitLoopCommand(LoopCommand ast, Void arg) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'visitLoopCommand'");
 	}
 
 }

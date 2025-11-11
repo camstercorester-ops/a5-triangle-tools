@@ -19,6 +19,7 @@
 package triangle;
 
 import triangle.abstractSyntaxTrees.Program;
+import triangle.abstractSyntaxTrees.visitors.ExpressionCountVisitor;
 import triangle.codeGenerator.Emitter;
 import triangle.codeGenerator.Encoder;
 import triangle.contextualAnalyzer.Checker;
@@ -36,7 +37,7 @@ import com.sampullara.cli.Argument;
  */
 public class Compiler {
 
-	@Argument(alias = "o", description = "Name of the object", required = true)
+	@Argument(alias = "o", description = "Name of the object", required = false)
 	protected String objectName = "obj.tam";
 
 	@Argument(alias = "s", description = "Shows the abstract tree for the program.", required = false)
@@ -47,6 +48,9 @@ public class Compiler {
 
 	@Argument(alias = "sa", description = "Show the abstract tree after folding", required = false)
 	protected boolean showTreeAfter = false;
+
+	@Argument(alias = "ss", description = "Show the expression count stats", required = false)
+	public boolean showStats = false;
 
 	private static Scanner scanner;
 	private static Parser parser;
@@ -72,7 +76,7 @@ public class Compiler {
 	 * @return true iff the source program is free of compile-time errors, otherwise
 	 *         false.
 	 */
-	static boolean compileProgram(String sourceName, String objectName, boolean showingAST, boolean showingTable, Compiler compiler) {
+	public static boolean compileProgram(String sourceName, String objectName, boolean showingAST, boolean showingTable, Compiler compiler) {
 
 		System.out.println("********** " + "Triangle Compiler (Java Version 2.1)" + " **********");
 
@@ -113,6 +117,13 @@ public class Compiler {
 			if (reporter.getNumErrors() == 0) {
 				System.out.println("Code Generation ...");
 				encoder.encodeRun(theAST, showingTable); // 3rd pass
+			}
+
+			if (compiler.showStats) {
+				ExpressionCountVisitor ecv = new ExpressionCountVisitor();
+				theAST.visit(ecv);
+				System.out.println("Integer Expressions: " + ecv.getIntegerExpressionCount());
+				System.out.println("Character Expressions: " + ecv.getCharacterExpressionCount());
 			}
 		}
 
