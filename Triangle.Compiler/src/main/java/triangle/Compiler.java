@@ -18,8 +18,11 @@
 
 package triangle;
 
+import triangle.abstractSyntaxTrees.AbstractSyntaxTree;
 import triangle.abstractSyntaxTrees.Program;
+import triangle.abstractSyntaxTrees.commands.Command;
 import triangle.abstractSyntaxTrees.visitors.ExpressionCountVisitor;
+import triangle.abstractSyntaxTrees.visitors.HoistVisitor;
 import triangle.codeGenerator.Emitter;
 import triangle.codeGenerator.Encoder;
 import triangle.contextualAnalyzer.Checker;
@@ -51,6 +54,9 @@ public class Compiler {
 
 	@Argument(alias = "ss", description = "Show the expression count stats", required = false)
 	public boolean showStats = false;
+
+	@Argument(alias = "h", description = "Enable hoisting of while loops", required = false)
+	public boolean hoisting = false;
 
 	private static Scanner scanner;
 	private static Parser parser;
@@ -95,6 +101,7 @@ public class Compiler {
 		emitter = new Emitter(reporter);
 		encoder = new Encoder(emitter, reporter);
 		drawer = new Drawer();
+		AbstractSyntaxTree transformedAST;
 
 		// scanner.enableDebugging();
 		theAST = parser.parseProgram(); // 1st pass
@@ -124,6 +131,14 @@ public class Compiler {
 				theAST.visit(ecv);
 				System.out.println("Integer Expressions: " + ecv.getIntegerExpressionCount());
 				System.out.println("Character Expressions: " + ecv.getCharacterExpressionCount());
+			}
+
+			if (compiler.hoisting){
+				System.out.println("Before Hoisting: " + theAST);
+				HoistVisitor hv = new HoistVisitor();
+				transformedAST = theAST.C.visit(hv, null);
+				theAST.C = (Command) transformedAST;
+				System.out.println("After Hoisting: " + theAST);
 			}
 		}
 
